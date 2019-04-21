@@ -62,7 +62,7 @@ TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char 
         p = CriaNoExt(k);
         if ( (*t)->NO.Chave[i] != Letra){//FIXED eu acho
             printf("\nDISNEY CHANELL\n");
-            return (CriaNoInt(i, t, &p, Letra));}
+            return (CriaNoInt(i, t, &p, Letra));} // OLHAR AMANHA
         else return (CriaNoInt(i, &p, t, Letra));
     }
     else {
@@ -101,6 +101,7 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
 
 
         i = 0;
+        letra = *(k+i);
         while (i <= D && (*(k+i) == p->NO.Chave[i])){
                 printf("%c", p->NO.Chave[i]);
                 printf(" ESPERADO\n");// essa linha aqui tem q tirar depois
@@ -115,7 +116,7 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
         //ATE AQUI CHEGOU
         if (i >= strlen(k) && p->NO.Chave[i] == '\0')//tem algum erro aqui
         { printf("Erro: chave ja esta na arvore\n");  return (*t); }
-        else return (InsereEntre(k, t, i, letra));
+        else return (InsereEntre(k, t, i, letra)); //ACHO QUE O ERRO ESTA AQUI, PQ QUANDO EU RETORNO PRO MAIN O A PASSA A APONTAR PARA ESSE NO INTERNO E PERDE A POSIÇÃO DO OUTRO
 
     }
 }
