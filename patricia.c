@@ -57,7 +57,7 @@ void Pesquisa(TipoChave k, TipoArvore t)
 
 TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char Letra) {
     TipoArvore p;
-    if (EExterno(*t) || (int)((*t)->)) {
+    if (EExterno(*t)) {
         printf("\nCHEGOU AQUI...\n");
         p = CriaNoExt(k);
         if ( (*t)->NO.Chave[i] != Letra){//FIXED eu acho
