@@ -23,6 +23,7 @@ typedef struct TipoPatNo {
         } NInterno ;
         TipoChave Chave[50];
     } NO;
+    int contpalavra;
 } TipoPatNo;
 
 // desabilitei pois nao esta usando o Bit mais
