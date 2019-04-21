@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <string.h>
 
+
 // nao precisa, ja esta definido em patricia.h
 //#define D 50
 
@@ -26,12 +27,13 @@ TipoArvore CriaNoInt(unsigned int i, TipoArvore *Esq,  TipoArvore *Dir,unsigned 
     return p;
 }
 // PASSOU POR TODA FUNÇÃO
-TipoArvore CriaNoExt(TipoChave *k){
+TipoArvore CriaNoExt(TipoChave *k,int docatual){
     TipoArvore p;
     int i = 0;
     p = (TipoArvore)malloc(sizeof(TipoPatNo));
     p->nt = Externo;
-    p->contpalavra=1;
+    inicizalizaLista(&(p->list));
+    p->list.ultimo->iddoc=docatual;
     while(*(k+i) != '\0') {
         p->NO.Chave[i] = *(k+i);
         i++;
@@ -56,11 +58,16 @@ void Pesquisa(TipoChave k, TipoArvore t)
 }
  */
 
-TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char Letra) {
+void mudanca(TipoArvore t){
+
+
+}
+
+TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char Letra,int docatual) {
     TipoArvore p;
     if (EExterno(*t)) {
         printf("\nCHEGOU AQUI...\n");
-        p = CriaNoExt(k);
+        p = CriaNoExt(k,docatual);
         if ( (*t)->NO.Chave[i] != Letra){//FIXED eu acho
             printf("\nDISNEY CHANELL\n");
             return (CriaNoInt(i, &p, t, Letra));} // OLHAR AMANHA
@@ -69,14 +76,14 @@ TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char 
     else {
         printf("\nTA CHEGANDO NO INSERE ISSO AQUI: %c\n", (*t)->NO.NInterno.Letra);
         if ((*(k+((int)((*t)->NO.NInterno.Pos))) == (*t)->NO.NInterno.Letra))
-            (*t)->NO.NInterno.Esq = InsereEntre(k,&(*t)->NO.NInterno.Esq,i, Letra);
+            (*t)->NO.NInterno.Esq = InsereEntre(k,&(*t)->NO.NInterno.Esq,i, Letra,docatual);
         else
-            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra);
+            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra,docatual);
         return (*t);
     }
 }
 
-TipoArvore Insere(TipoChave *k, TipoArvore *t) {
+TipoArvore Insere(TipoChave *k, TipoArvore *t,int docatual) {
 
     TipoArvore p;
     //printf("\nInserindo na arvore a palavra: %s\n", k); // Checkin
@@ -86,7 +93,7 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
     //printf("%d", strlen(k));       APENAS CHECAGEM
     if (*t == NULL) {
         //======= ATE AQUI CHEGOU ========
-        return (CriaNoExt(k)); // return faz sair da função
+        return (CriaNoExt(k,docatual)); // return faz sair da função
     }
         //===================ATÉ AQUI CHEGOU================
     else {
@@ -116,8 +123,20 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
         }
         //ATE AQUI CHEGOU
         if (i >= strlen(k) && p->NO.Chave[i] == '\0')//tem algum erro aqui
-        { p->contpalavra=p->contpalavra+1; printf("Erro: chave ja esta na arvore %d\n",p->contpalavra);  return (*t); }
-        else return (InsereEntre(k, t, i, letra)); //ACHO QUE O ERRO ESTA AQUI, PQ QUANDO EU RETORNO PRO MAIN O A PASSA A APONTAR PARA ESSE NO INTERNO E PERDE A POSIÇÃO DO OUTRO
+        {
+         if(p->list.ultimo->iddoc!=docatual) {
+             criacelula(&(p->list),docatual);
+             p->list.ultimo->cont = p->list.ultimo->cont + 1;
+             printf("Erro: chave ja esta na arvore %d\n", p->list.ultimo->cont);
+             return (*t);
+         }
+         else{
+             p->list.ultimo->cont = p->list.ultimo->cont + 1;
+             printf("Erro: chave ja esta na arvore cont:%d id:%d\n", p->list.ultimo->cont,p->list.ultimo->iddoc);
+             return (*t);
+         }
+        }
+        else return (InsereEntre(k, t, i, letra,docatual)); //ACHO QUE O ERRO ESTA AQUI, PQ QUANDO EU RETORNO PRO MAIN O A PASSA A APONTAR PARA ESSE NO INTERNO E PERDE A POSIÇÃO DO OUTRO
 
     }
 }
