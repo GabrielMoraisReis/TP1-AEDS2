@@ -62,15 +62,15 @@ TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char 
         p = CriaNoExt(k);
         if ( (*t)->NO.Chave[i] != Letra){//FIXED eu acho
             printf("\nDISNEY CHANELL\n");
-            return (CriaNoInt(i, t, &p, Letra));} // OLHAR AMANHA
-        else return (CriaNoInt(i, &p, t, Letra));
+            return (CriaNoInt(i, &p, t, Letra));} // OLHAR AMANHA
+        else return (CriaNoInt(i, t, &p, Letra));
     }
     else {
         printf("\nTA CHEGANDO NO INSERE ISSO AQUI: %c\n", (*t)->NO.NInterno.Letra);
         if ((*(k+((int)((*t)->NO.NInterno.Pos))) == (*t)->NO.NInterno.Letra))
-            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra);
-        else
             (*t)->NO.NInterno.Esq = InsereEntre(k,&(*t)->NO.NInterno.Esq,i, Letra);
+        else
+            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra);
         return (*t);
     }
 }
@@ -95,8 +95,8 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
             //printf("++++++++++++++++++++++++++++++++");
             //printf("\nTamanho da string: %d\n", strlen(k));
             if (*(k+((int)p->NO.NInterno.Pos)) ==    p->NO.NInterno.Letra)
-                p = p->NO.NInterno.Dir;
-            else p = p->NO.NInterno.Esq;
+                p = p->NO.NInterno.Esq;
+            else p = p->NO.NInterno.Dir ;
         }
 
 
