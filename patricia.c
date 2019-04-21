@@ -31,6 +31,7 @@ TipoArvore CriaNoExt(TipoChave *k){
     int i = 0;
     p = (TipoArvore)malloc(sizeof(TipoPatNo));
     p->nt = Externo;
+    p->contpalavra=1;
     while(*(k+i) != '\0') {
         p->NO.Chave[i] = *(k+i);
         i++;
@@ -62,21 +63,21 @@ TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char 
         p = CriaNoExt(k);
         if ( (*t)->NO.Chave[i] != Letra){//FIXED eu acho
             printf("\nDISNEY CHANELL\n");
-            return (CriaNoInt(i, t, &p, Letra));} // OLHAR AMANHA
-        else return (CriaNoInt(i, &p, t, Letra));
+            return (CriaNoInt(i, &p, t, Letra));} // OLHAR AMANHA
+        else return (CriaNoInt(i, t, &p, Letra));
     }
     else {
         printf("\nTA CHEGANDO NO INSERE ISSO AQUI: %c\n", (*t)->NO.NInterno.Letra);
         if ((*(k+((int)((*t)->NO.NInterno.Pos))) == (*t)->NO.NInterno.Letra))
-            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra);
-        else
             (*t)->NO.NInterno.Esq = InsereEntre(k,&(*t)->NO.NInterno.Esq,i, Letra);
+        else
+            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra);
         return (*t);
     }
 }
 
-TipoArvore Insere(TipoChave *k, TipoArvore *t) { 
-    
+TipoArvore Insere(TipoChave *k, TipoArvore *t) {
+
     TipoArvore p;
     //printf("\nInserindo na arvore a palavra: %s\n", k); // Checkin
     unsigned int i;
@@ -87,7 +88,7 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
         //======= ATE AQUI CHEGOU ========
         return (CriaNoExt(k)); // return faz sair da função
     }
-    //===================ATÉ AQUI CHEGOU================
+        //===================ATÉ AQUI CHEGOU================
     else {
         p = *t;
         printf("Tamanho da string: %d", strlen(k));//chegou aqui ufa
@@ -95,27 +96,27 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
             //printf("++++++++++++++++++++++++++++++++");
             //printf("\nTamanho da string: %d\n", strlen(k));
             if (*(k+((int)p->NO.NInterno.Pos)) ==    p->NO.NInterno.Letra)
-                p = p->NO.NInterno.Dir;
-            else p = p->NO.NInterno.Esq;
+                p = p->NO.NInterno.Esq;
+            else p = p->NO.NInterno.Dir ;
         }
 
 
         i = 0;
         letra = *(k+i);
         while (i <= D && (*(k+i) == p->NO.Chave[i])){
-                printf("%c", p->NO.Chave[i]);
-                printf(" ESPERADO\n");// essa linha aqui tem q tirar depois
-                //O i SAI DAQUI COM A POSIÇÃO QUE DIFERE AS DUAS PALAVRAS
-                i++;
-                letra = *(k+i);
-                if(*(k+i) == '\0'){
-                    break;
-                }
-                printf("\nLETRA ESTA ARMAZENANDO: %c\n", letra);
+            printf("%c", p->NO.Chave[i]);
+            printf(" ESPERADO\n");// essa linha aqui tem q tirar depois
+            //O i SAI DAQUI COM A POSIÇÃO QUE DIFERE AS DUAS PALAVRAS
+            i++;
+            letra = *(k+i);
+            if(*(k+i) == '\0'){
+                break;
+            }
+            printf("\nLETRA ESTA ARMAZENANDO: %c\n", letra);
         }
         //ATE AQUI CHEGOU
         if (i >= strlen(k) && p->NO.Chave[i] == '\0')//tem algum erro aqui
-        { printf("Erro: chave ja esta na arvore\n");  return (*t); }
+        { p->contpalavra=p->contpalavra+1; printf("Erro: chave ja esta na arvore %d\n",p->contpalavra);  return (*t); }
         else return (InsereEntre(k, t, i, letra)); //ACHO QUE O ERRO ESTA AQUI, PQ QUANDO EU RETORNO PRO MAIN O A PASSA A APONTAR PARA ESSE NO INTERNO E PERDE A POSIÇÃO DO OUTRO
 
     }
