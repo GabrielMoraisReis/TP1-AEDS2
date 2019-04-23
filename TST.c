@@ -3,7 +3,7 @@
 #include <string.h>
 #include "TST.h"
 
-void inicializa(TipoApontador* no){
+void inicializaTST(TipoApontador* no){
     *no=NULL;
 }
 
@@ -11,7 +11,7 @@ void inicializa(TipoApontador* no){
 void InsereNo (char* string, TipoApontador *no)
 {
     if(*no==NULL){
-        *no= (TipoApontador)malloc(sizeof(TipoNo));
+        *no= (TipoApontador)malloc(sizeof(TipoNoTST));
         (*no)->palavra=string[0];
         (*no)->fdir=NULL;
         (*no)->fmid=NULL;
@@ -30,7 +30,7 @@ void InsereNo (char* string, TipoApontador *no)
             return;
         } else
             InsereNo(++string,&(*no)->fmid);//"++string" avança a posição do vetor, meio que deleta a posição 0 e a antiga
-                                            //posição 1 vira a nova posição 0
+        //posição 1 vira a nova posição 0
     }
 }
 
@@ -49,7 +49,7 @@ void busca(char* string, TipoApontador no){
     else{
         if (*(string+1)=='\0' && no->type==YES){
             printf("Encontrado\n");
-        return;}
+            return;}
         else
             busca(++string, no->fmid);
     }
