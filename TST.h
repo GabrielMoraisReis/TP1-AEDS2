@@ -6,9 +6,9 @@ typedef struct Node {
     char palavra;
     TipoApontador fesq, fdir, fmid;
     enum ntype type;
-}TipoNo;
+}TipoNoTST;
 
-void inicializa(TipoApontador *no);
+void inicializaTST(TipoApontador *no);
 void InsereNo( char* string, TipoApontador* node);
 void busca(char* string, TipoApontador No);
 
