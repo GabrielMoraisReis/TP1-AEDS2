@@ -26,11 +26,14 @@ TipoArvore CriaNoInt(unsigned int i, TipoArvore *Esq,  TipoArvore *Dir,unsigned 
     return p;
 }
 // PASSOU POR TODA FUNÇÃO
-TipoArvore CriaNoExt(TipoChave *k){
+TipoArvore CriaNoExt(TipoChave *k,int docatual, lista2* total_pal){
     TipoArvore p;
     int i = 0;
     p = (TipoArvore)malloc(sizeof(TipoPatNo));
     p->nt = Externo;
+    inicizalizaLista(&(p->list));
+    p->list.ultimo->iddoc=docatual;
+    total_pal->ultimo->contatotal=total_pal->ultimo->contatotal+1;
     while(*(k+i) != '\0') {
         p->NO.Chave[i] = *(k+i);
         i++;
@@ -39,27 +42,12 @@ TipoArvore CriaNoExt(TipoChave *k){
 }
 //==============================
 
-///MUDAR ESSA PESQUISA DISNEY AEE
 
-/*
-void Pesquisa(TipoChave k, TipoArvore t)
-{ if (EExterno(t))
-    { if (k == t->NO.Chave)
-            printf("Elemento encontrado\n");
-        else printf("Elemento nao encontrado\n");
-        return;
-    }
-    if (Bit(t->NO.NInterno.Pos, k) == 0) //TEM Q TIRAR ESSE BIT, MAS TENHO Q VER COMO MUDAR A COMPARACAO DE INDEX
-        Pesquisa(k, t->NO.NInterno.Esq);
-    else Pesquisa(k, t->NO.NInterno.Dir);
-}
- */
-
-TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char Letra) {
+TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char Letra,int docatual, lista2* total_pal) {
     TipoArvore p, aux;
     if (EExterno(*t) || i < (int)((*t)->NO.NInterno.Pos)) {
         printf("\nCHEGOU AQUI...\n");
-        p = CriaNoExt(k);
+        p = CriaNoExt(k, docatual, total_pal);
         if(EExterno(*t)) {
             if ((*t)->NO.Chave[i] <= Letra) {//FIXED eu acho
                 printf("\nDISNEY CHANELL\n");
@@ -81,15 +69,15 @@ TipoArvore InsereEntre(TipoChave *k, TipoArvore *t,unsigned int i,unsigned char 
     else {
         printf("\nTA CHEGANDO NO INSERE ISSO AQUI: %c\n", (*t)->NO.NInterno.Letra);
         if ((*(k+((int)((*t)->NO.NInterno.Pos))) <= (*t)->NO.NInterno.Letra))
-            (*t)->NO.NInterno.Esq = InsereEntre(k,&(*t)->NO.NInterno.Esq,i, Letra);
+            (*t)->NO.NInterno.Esq = InsereEntre(k,&(*t)->NO.NInterno.Esq,i, Letra, docatual, total_pal);
         else
-            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra);
+            (*t)->NO.NInterno.Dir = InsereEntre(k,&(*t)->NO.NInterno.Dir,i, Letra, docatual, total_pal);
         return (*t);
     }
 }
 
-TipoArvore Insere(TipoChave *k, TipoArvore *t) { 
-    
+TipoArvore Insere(TipoChave *k, TipoArvore *t,int docatual, lista2* total_pal){
+
     TipoArvore *p;
     //printf("\nInserindo na arvore a palavra: %s\n", k); // Checkin
     unsigned int i;
@@ -98,9 +86,9 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
     //printf("%d", strlen(k));       APENAS CHECAGEM
     if (*t == NULL) {
         //======= ATE AQUI CHEGOU ========
-        return (CriaNoExt(k)); // return faz sair da função
+        return (CriaNoExt(k, docatual,total_pal)); // return faz sair da função
     }
-    //===================ATÉ AQUI CHEGOU================
+        //===================ATÉ AQUI CHEGOU================
     else {
 
         p = t;
@@ -118,22 +106,34 @@ TipoArvore Insere(TipoChave *k, TipoArvore *t) {
         i = 0;
         letra = *(k+i);
         while (i <= D && (*(k+i) == (*p)->NO.Chave[i])){
-                printf("%c", (*p)->NO.Chave[i]);
-                printf(" ESPERADO\n");// essa linha aqui tem q tirar depois
-                //O i SAI DAQUI COM A POSIÇÃO QUE DIFERE AS DUAS PALAVRAS
-                i++;
-                letra = *(k+i);
-                if(i == strlen(k)+1){
-                    break;
-                }
-                printf("\nLETRA ESTA ARMAZENANDO: %c\n", letra);
+            printf("%c", (*p)->NO.Chave[i]);
+            printf(" ESPERADO\n");// essa linha aqui tem q tirar depois
+            //O i SAI DAQUI COM A POSIÇÃO QUE DIFERE AS DUAS PALAVRAS
+            i++;
+            letra = *(k+i);
+            if(i == strlen(k)+1){
+                break;
+            }
+            printf("\nLETRA ESTA ARMAZENANDO: %c\n", letra);
         }
         //ATE AQUI CHEGOU
         printf("chave = %s", k);
         printf("chave = %s", (*p)->NO.Chave);
         if (i >= strlen(k) && (*p)->NO.Chave[i] == '\0')//tem algum erro aqui
-        { printf("Erro: chave ja esta na arvore\n");  return (*t); }
-        else return (InsereEntre(k, t, i, letra)); //ACHO QUE O ERRO ESTA AQUI, PQ QUANDO EU RETORNO PRO MAIN O A PASSA A APONTAR PARA ESSE NO INTERNO E PERDE A POSIÇÃO DO OUTRO
+        {
+            if((*p)->list.ultimo->iddoc!=docatual){
+                criacelula(&((*p)->list),docatual);
+                (*p)->list.ultimo->cont = (*p)->list.ultimo->cont + 1;
+                printf("Erro: chave ja esta na arvore %d\n", (*p)->list.ultimo->cont);
+                return (*t);
+            }
+            else {
+                (*p)->list.ultimo->cont = (*p)->list.ultimo->cont + 1;
+                printf("Erro: chave ja esta na arvore cont:%d id:%d\n", (*p)->list.ultimo->cont, (*p)->list.ultimo->iddoc);
+                return (*t);
+            }
+        }
+        else return (InsereEntre(k, t, i, letra,docatual,total_pal)); //ACHO QUE O ERRO ESTA AQUI, PQ QUANDO EU RETORNO PRO MAIN O A PASSA A APONTAR PARA ESSE NO INTERNO E PERDE A POSIÇÃO DO OUTRO
 
     }
 }
@@ -150,16 +150,17 @@ void Inicializa(TipoArvore *a){
     *a = NULL;
 }
 
-void ImprimePat(TipoArvore t){//Imprime a árvore PATRICIA
-    if(EExterno(t)){//Verifica se o nó é externo, significando que uma chave deve ser mostrada
-        printf("\nPalavra -> %s ", t->NO.Chave);//Imprime a palavra
+void ImprimeIndice(TipoArvore t){
+    if(EExterno(t)){
+        printf("\nPalavra -> %s ", t->NO.Chave);
+        imprimeLista(&(t->list));
     }
-    else{//Se o nó for interno, significa que a árvore ainda deve ser percorrida
-        if(t->NO.NInterno.Esq != NULL){//Verifica se o nó a esquerda não é vazio
-            ImprimePat(t->NO.NInterno.Esq);//Avança para a esquerda primeiro (Para garantir a ordem alfabética)
+    else{
+        if(t->NO.NInterno.Esq != NULL){
+            ImprimeIndice(t->NO.NInterno.Esq);
         }
-        if(t->NO.NInterno.Dir != NULL){//Verifica se o nó a direita não é vazio
-            ImprimePat(t->NO.NInterno.Dir);//Avança para a direita por último (Para garantir a ordem alfabética)
+        if(t->NO.NInterno.Dir != NULL){
+            ImprimeIndice(t->NO.NInterno.Dir);
         }
     }
 }
@@ -217,4 +218,3 @@ TipoArvore *checagem(TipoArvore *p){
     }
     return p;
 }
-
